@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "metaphone-pt"
+version = "0.1.0"
+description = "Brazilian Portuguese metaphone implementation"
+requires-python = ">=3.10"
+readme = "README.md"
+authors = [{ name = "metaphone-pt contributors" }]
+license = { text = "Proprietary" }
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
