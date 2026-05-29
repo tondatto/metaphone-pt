@@ -4,6 +4,8 @@ from .engine import Metaphone
 
 
 class MetaphonePtBr(Metaphone):
+    CONSONANT = "[bcdfghjklmnpqrstvwxyz]"
+
     def prepare(self) -> None:
         """Prepares the text for processing by the algorithm.
            This duplicated letters are just a headache. Before starting, we remove the excess.
@@ -26,6 +28,8 @@ class MetaphonePtBr(Metaphone):
             "n",
             "z",
         )
+        assert self._transformed is not None
+        self._transformed = self._transformed.replace("y", "i")
 
     def algorithm(self) -> None:
         """The main algorithm of the Metaphone for Brazilian Portuguese."""
@@ -58,6 +62,7 @@ class MetaphonePtBr(Metaphone):
 
         self.translate("rr", "2")
         self.translate(self.WORD_START + "(r)", "2") # Raul, Régis
+        self.translate("(r)(?=l)", "2")
         self.translate("(r)" + self.WORD_END, "2") # Adamastor, Maber
         self.translate("r", "R") # Maria, Marcelo
 
@@ -68,11 +73,12 @@ class MetaphonePtBr(Metaphone):
         self.translate("nh", "3")
         self.translate("n", "N")
 
+        self.translate(self.WORD_START + "([ei]s)(?=" + self.CONSONANT + ")", "S")
+        self.translate(self.VOWEL + "(s)" + self.VOWEL, "Z") # asa, Isabel
         self.translate("ss", "S")
         self.translate(self.WORD_START + "(s)", "S") # Sebastião, Sérgio
         self.translate("(s)" + self.WORD_END, "S") # Marcos
         self.translate("sh", "X") # Shakespeare, Shakira, but also "sheriff" and "shampoo", which are common words in Portuguese. So we translate "sh" to "X", but we also have to take care of words like "sheriff" and "shampoo", which should be translated to "XERIF" and "XAMPU", not "XERIF" and "XAMPU". So we have to make sure that the "sh" is at the beginning of the word, or followed by a space.
-        self.translate(self.VOWEL + "(s)" + self.VOWEL, "Z") # asa, Isabel
         self.translate("sc[ei]", "S") # Ascenso, Asceta
         self.translate("sc[aou]", "SC") # Mascarenhas
         self.translate("s", "S")

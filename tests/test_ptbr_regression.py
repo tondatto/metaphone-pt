@@ -19,7 +19,30 @@ from metaphone_pt.ptbr import metaphone_ptbr
         ("Ação", "AS"),
         ("AYRTON SENNA DA SILVA", "ARTM SN D SLV"),
         ("HAIRTOM CENA DA SYLWA", "ARTM SN D SLV"),
+        ("YGOR", "IG2"),
+        ("IGHOR", "IG2"),
     ],
 )
 def test_regression_cases(text: str | None, expected: str) -> None:
+    assert metaphone_ptbr(text) == expected
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("STEPHANY", "STFN"),
+        ("ESTEFANI", "STFN"),
+        ("ESTAVAO", "STV"),
+        ("ESPADA", "SPD"),
+        ("ESCARLET", "SK2LT"),
+        ("SCARLET", "SK2LT"),
+        ("ISABEL", "IZB"),
+        ("STANLEY", "STNL"),
+        ("YARA", "IR"),
+    ],
+)
+def test_word_start_sound_rules(
+    text: str,
+    expected: str,
+) -> None:
     assert metaphone_ptbr(text) == expected
