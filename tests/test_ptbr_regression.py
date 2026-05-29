@@ -17,6 +17,8 @@ from metaphone_pt.ptbr import metaphone_ptbr
         ("Alex", "ALX"),
         ("Queiroz", "KRS"),
         ("Ação", "AS"),
+        ("AYRTON SENNA DA SILVA", "ARTM SN D SLV"),
+        ("HAIRTOM CENA DA SYLWA", "ARTM SN D SLV"),
     ],
 )
 def test_regression_cases(text: str | None, expected: str) -> None:

@@ -8,6 +8,8 @@ class Metaphone(ABC):
     THE_MATCH = "$0"
     VOWEL = "[aeiouy]"
     NON_VOWEL = "[^aeiouy]"
+    WORD_START = r"\s"
+    WORD_END = r"(?=\s)"
 
     def __init__(self, text: str | None) -> None:
         self._original = text
