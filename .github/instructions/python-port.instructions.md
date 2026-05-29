@@ -1,25 +1,25 @@
 ---
-description: "Use when creating or editing Python code for the Metaphone PT-BR port to preserve parity with the legacy C# algorithm."
+description: "Use when creating or editing Python code for the Metaphone PT-BR implementation to preserve current engine and rule semantics."
 applyTo: "**/*.py"
 ---
 
-# Python Port Instructions (Metaphone PT-BR)
+# Python Implementation Instructions (Metaphone PT-BR)
 
 Use these rules when implementing Python source files for this repository.
 
 ## Primary Reference
 
 - Treat [AGENTS.md](AGENTS.md) as the top-level project policy.
-- Treat [legacy/Metaphone.cs](legacy/Metaphone.cs) and [legacy/MetaphonePtBr.cs](legacy/MetaphonePtBr.cs) as behavior source of truth.
+- Treat [src/metaphone_pt/engine.py](src/metaphone_pt/engine.py), [src/metaphone_pt/ptbr.py](src/metaphone_pt/ptbr.py), and the regression tests under [tests](tests) as the behavior source of truth.
 
-## Required Behavior Parity
+## Required Behavior
 
-- Preserve rule order from the C# algorithm exactly.
+- Preserve rule order from the current implementation exactly.
 - Preserve cursor/consumption behavior from `Translate`, `Ignore`, `Keep`, and `IgnoreNoMatches`.
 - Preserve input preprocessing semantics:
   - lowercase conversion
   - accent removal
-  - duplicate-letter collapsing equivalent to legacy `RemoveMultiples`
+  - duplicate-letter collapsing equivalent to the configured `remove_multiples` calls
   - leading/trailing border spaces before iterative processing
 - Preserve output formatting: uppercase code and trimmed final string.
 

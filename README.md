@@ -17,9 +17,9 @@ A phonetic algorithm for Brazilian Portuguese names and words.
 
 **metaphone-pt** implements rules specifically tuned for Brazilian Portuguese, including accent normalization and duplicate-letter collapsing, making it suitable for fuzzy matching of Brazilian names in databases and search applications.
 
-## Origin
+## Project Scope
 
-This is a Python port of a legacy C# algorithm originally deployed as a SQL Server CLR function. The `legacy/` directory contains the original C# source (`Metaphone.cs`, `MetaphonePtBr.cs`) which serves as the reference implementation. Behavioral parity with that implementation is the primary correctness criterion.
+This repository maintains the Python implementation directly. The current behavior is defined by the engine and PT-BR rule set in `src/metaphone_pt/`, with regression tests in `tests/` protecting expected outputs.
 
 ## Installation
 
@@ -66,7 +66,7 @@ pytest tests/test_ptbr_regression.py
 pytest tests/test_engine_semantics.py
 ```
 
-The regression suite (`tests/test_ptbr_regression.py`) validates output parity with the original C# implementation across a range of Portuguese names, accented input, and edge cases.
+The regression suite (`tests/test_ptbr_regression.py`) validates expected outputs across a range of Portuguese names, accented input, and edge cases.
 
 ## Algorithm Overview
 
@@ -84,11 +84,8 @@ Key substitutions include `ph→F`, `th→T`, `lh→L`, `nh→N`, `ch→X`, `x�
 
 ```
 src/metaphone_pt/
-    engine.py   # Cursor-driven rule engine (port of Metaphone.cs)
-    ptbr.py     # Brazilian Portuguese rules (port of MetaphonePtBr.cs)
-legacy/
-    Metaphone.cs          # Original C# engine
-    MetaphonePtBr.cs      # Original C# PT-BR rules
+    engine.py   # Cursor-driven rule engine
+    ptbr.py     # Brazilian Portuguese rules
 tests/
     test_ptbr_regression.py   # Golden output tests
     test_engine_semantics.py  # Engine behavior tests

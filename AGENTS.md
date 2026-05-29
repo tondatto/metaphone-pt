@@ -4,40 +4,41 @@
 
 Build a Python library that converts input text to a phonetic code specialized for Brazilian Portuguese.
 
-The current reference implementation is legacy C# code originally used as a SQL Server CLR function.
+The repository maintains the Python implementation directly.
 
 ## Source Of Truth
 
-- `legacy/Metaphone.cs`: abstract transformation engine (`Translate`, `Ignore`, `Keep`, cursor-based processing, regex matching, accent and duplicate handling).
-- `legacy/MetaphonePtBr.cs`: Brazilian Portuguese phonetic rules and ordering.
-- `legacy/MetaphoneSqlFunction.cs`: SQL wrapper only; not part of core algorithm behavior.
+- `src/metaphone_pt/engine.py`: transformation engine (`Translate`, `Ignore`, `Keep`, cursor-based processing, regex matching, accent handling, duplicate collapsing).
+- `src/metaphone_pt/ptbr.py`: Brazilian Portuguese phonetic rules and ordering.
+- `tests/test_engine_semantics.py`: engine behavior invariants.
+- `tests/test_ptbr_regression.py`: golden outputs for names, phrases, accents, and edge cases.
 
-When behavior is ambiguous, preserve outputs produced by `MetaphonePtBr` + `Metaphone` core logic.
+When behavior is ambiguous, preserve outputs validated by the current engine, rule ordering, and regression tests.
 
-## Non-Negotiable Porting Rules
+## Non-Negotiable Algorithm Rules
 
 - Preserve rule order exactly. The algorithm is order-sensitive.
 - Preserve cursor consumption semantics from `Translate` and `IgnoreNoMatches`.
 - Preserve border-space behavior (`" " + transformed + " "`) before processing.
 - Preserve uppercase output and final trim behavior.
-- Preserve placeholder symbols used by the original algorithm (`1`, `2`, `3`, `X`, `KS`, etc.).
-- Keep vowel/non-vowel classes behavior equivalent to the C# constants.
+- Preserve placeholder symbols used by the algorithm (`1`, `2`, `3`, `X`, `KS`, etc.).
+- Keep vowel/non-vowel classes behavior equivalent to the engine constants.
 
 ## Python Implementation Guidance
 
-- Use `re` carefully to emulate C# `Regex.Match` + anchored look-ahead/look-behind checks used in `Translate`.
-- Keep architecture split similar to legacy:
+- Use `re` carefully to preserve the anchored look-ahead/look-behind checks used in `Translate`.
+- Keep architecture split similar to the current implementation:
   - Base engine class (stateful, cursor-driven matching/consumption).
   - PT-BR rule class containing only rule setup and sequence.
 - Normalize text before rules:
   - lowercase
   - remove accents
-  - collapse repeated letters listed by the original `RemoveMultiples` call
+  - collapse repeated letters listed by `prepare()` / `remove_multiples()`
 - Avoid introducing language-specific shortcuts that change outputs, even if they look cleaner.
 
 ## Testing Strategy (Required)
 
-- Create golden tests from representative Portuguese names and tricky edge cases seen in comments in `legacy/MetaphonePtBr.cs`.
+- Create golden tests from representative Portuguese names and tricky edge cases covered by current rules and comments.
 - Add regression tests whenever a rule is changed.
 - Verify edge behavior:
   - empty/null-ish input
@@ -50,13 +51,12 @@ When behavior is ambiguous, preserve outputs produced by `MetaphonePtBr` + `Meta
 
 - Do not simplify rule expressions before test parity is achieved.
 - Do not convert the engine into token-based parsing that skips current cursor semantics.
-- Do not treat SQL wrapper concerns as algorithm requirements.
-- Be careful with character encoding when copying legacy accent patterns; prefer explicit Unicode-safe normalization in Python.
+- Be careful with character encoding during accent normalization; prefer explicit Unicode-safe normalization in Python.
 
 ## Current Repository State
 
-- No build/test tooling is defined yet.
-- If adding tooling, prefer:
-  - `pytest` for tests
-  - minimal packaging (`pyproject.toml`)
-  - deterministic tests focused on output parity with legacy behavior
+- Test tooling is configured in `pyproject.toml`.
+- Preferred validation commands:
+  - `python3 -m pytest -q`
+  - `python3 -m pytest tests/test_ptbr_regression.py -q`
+  - `python3 -m pytest tests/test_engine_semantics.py -q`

@@ -1,20 +1,20 @@
 ---
-description: "Port one Metaphone PT-BR rule block from legacy C# to Python and generate parity regression tests."
+description: "Update one Metaphone PT-BR rule block in Python and generate regression tests."
 ---
 
-# Port Rule Block With Parity Tests
+# Update Rule Block With Regression Tests
 
-Port one rule block from legacy C# into Python while preserving behavior exactly.
+Update one Metaphone PT-BR rule block in Python while preserving behavior exactly.
 
 ## Required Inputs
 
-- Legacy source file and rule snippet.
+- Target rule snippet or behavior to change.
 - Target Python file/module.
 - Existing test file path.
 
 ## Procedure
 
-1. Identify the exact legacy rule order around the target snippet.
+1. Identify the exact current rule order around the target snippet.
 2. Implement the smallest Python change that preserves cursor consumption and matching semantics.
 3. Add regression tests for:
    - direct positive matches
@@ -24,7 +24,7 @@ Port one rule block from legacy C# into Python while preserving behavior exactly
 
 ## Response Template
 
-- Legacy rule mapped: <short snippet summary>
+- Rule block updated: <short snippet summary>
 - Python change: <what changed and why>
 - Tests added: <test names and protected behavior>
 - Validation: <commands run and pass/fail>
